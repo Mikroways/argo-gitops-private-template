@@ -46,7 +46,7 @@ Entonces, generamos el `.envrc` de la siguiente forma:
 ```bash
 # Seteamos SOPS_AGE_KEY_FILE auxiliarmente para indicar el PATH a nuestra clave
 # Age privada
-SOPS_AGE_KEY_FILE=$PWD/.age/key.txt
+SOPS_AGE_KEY_FILE=$PWD/.age/key
 
 # Creamos el directorio para alojar la clave Age
 mkdir -p .age
@@ -55,23 +55,23 @@ mkdir -p .age
 age-keygen -o $SOPS_AGE_KEY_FILE
 
 # Obtenemos la clave pública de la reciente clave generada
-AGE_PK=$(cat .age/key| grep 'public' | cut -d: -f2 | tr -d ' ')
+AGE_PK=$(cat $SOPS_AGE_KEY_FILE| grep 'public' | cut -d: -f2 | tr -d ' ')
 
 # Creamos el .envrc con los datos recientemente obtenidos
 cat > .envrc <<EOF
 source_up
 export SOPS_AGE_KEY_FILE=\$PWD/.age/key
-export SOPS_AGE_RECIPIENTS=${AGE_PK},\${ARGOCD_AGE_AGE_PK}
+export SOPS_AGE_RECIPIENTS=${AGE_PK},\${ARGOCD_AGE_PK}
 EOF
 ```
 
-> Observar que la variable `ARGOCD_AGE_AGE_PK` se obtiene con la instrucción
+> Observar que la variable `ARGOCD_AGE_PK` se obtiene con la instrucción
 > `source_up`, cargando las variables seteadas por un `.envrc` en alguna carpeta
 > padre de la actual.
 
 Escrito el nuevo `.envrc` direnv nos pedirá permitir cargar sus variables:
 
-```
+```bash
 direnv allow
 ```
 
@@ -84,7 +84,7 @@ http://wp-example-prod.gitops.localhost. La contraseña será
 
 Estos datos tenemos que cifrarlos. Para ello:
 
-```
+```bash
 sops -e reqs/secrets.clear.yaml > reqs/secrets.yaml
 sops -e wp/secrets.clear.yaml > wp/secrets.yaml
 ```
@@ -95,7 +95,7 @@ sops -e wp/secrets.clear.yaml > wp/secrets.yaml
 
 Una vez finalizados todos los cambios, subirlos a git y hacer push:
 
-```
+```bash
 git add .
 git commit -m "Encrypt secret data"
 git push origin main
@@ -124,7 +124,7 @@ Los directorios `req` y `wp`, se han creado para simplificar la labor de quien
 esté probando el flujo. Pero si se quisieran crear, simplemente se deben correr
 los siguientes comandos:
 
-```
+```bash
 helm create wp
 helm create reqs
 rm -fr {wp,reqs}/{charts,templates,values.yaml} 
@@ -133,3 +133,19 @@ rm -fr {wp,reqs}/{charts,templates,values.yaml}
 Luego, hemos editado los único archivos dentro de cada directorio, es decir 
 `wp/Chart.yaml` y `reqs/Chart.yaml`. Cada uno agrega como dependencia el o los
 charts de quien dependen.
+
+## Cómo probar los templates que generaría este repositorio
+
+Suponiendo que se desea visualizar los templates de **req/**:
+
+```bash
+helm dependency update reqs/
+helm secrets template reqs/ -f reqs/secrets.yaml
+```
+
+Para el caso de **wp/**_
+
+```bash
+helm dependency update wp/
+helm secrets template wp/ -f wp/secrets.yaml
+```
