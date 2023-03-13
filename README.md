@@ -15,7 +15,7 @@ que mantenga ese despliegue GitOps.
 Debido a que el flujo presenta varios ejemplos, con este repositorio
 completaremos los ejemplos que requieren trabajar con:
 
-* Un repositorio de GitOps: desplegará un wordpess
+* [**Un repositorio de GitOps**](gitops-wordpress/): desplegará un wordpess
 * Un repositorio de GitOps con una registry privada
 * Un repositorio de GitOps utilizando un repositorio de chart privado.
 
@@ -26,3 +26,51 @@ nuevo repositorio **personal y privado** desde el botón [template](https://gith
 
 Una vez creado el repositorio privado seguir la documentación de cada
 directorio y del flujo para así completar la experiencia.
+
+## Requerimientos
+
+Para el uso de GitOps, manejaremos claves Age que nos permitirá cifrar los datos
+usando sops. Las instrucciones para instalar las herramientas se mencionan en el
+[repositorio del flujo de gitops](https://github.com/Mikroways/argo-gitops-demo-example/tree/main/kind#requerimientos).
+Para este repositorio, no necesitamos todas las herramientas allí mencionadas,
+solo necesitamos de:
+
+* age
+* sops
+* direnv
+
+### Configuramos entonces direnv
+
+Usaremos como configuración global en este repositorio, una variable llamada
+`ARGOCD_AGE_PK` que luego, cada ejemplo utilizará para cifrar datos con una
+clave propia y la pública de Argo CD almacenada en la variable mencionada.
+
+Creamos entones esta variable de la sigiente forma: desde un directorio donde
+tengamos acceso al cluster kind creado como se explica en [la documentación del
+ejemplo del marco de
+trabajo](https://github.com/Mikroways/argo-gitops-demo-example/tree/main/kind#obtener-la-clave-age-p%C3%BAblica-de-argo-cd)
+corremos el siguiente comando:
+
+```bash
+# Accedemos al directorio donde esté corriendo el cluster kind y tengamos un
+# kubeconfig que nos permita correr el siguiente comando
+#     cd <directorio-con-acceso-a-cluster-kind>
+AGE_PK=$(kubectl -n argocd get secrets -l component=helm-secrets-age \
+  -o jsonpath='{.items[0].data.key\.txt}' | base64 -d \
+  | grep 'public' | cut -d: -f2 )
+
+# Una vez con la variable seteada, procedemos a retornar al directorio con el
+# repositorio clonado desde el template
+#     cd <vuelvo al directorio de este repositorio>
+cat > .envrc <<EOF
+export ARGOCD_AGE_PK=$AGE_PK
+EOF
+```
+
+Al ejecutar el comando anterior, **direnv nos solicitará permitir el `.envrc`
+generado**:
+
+```bash
+direnv allow
+```
+
