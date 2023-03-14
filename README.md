@@ -1,4 +1,4 @@
-# Wordpress desplegado con GitOps
+# Ejemplos varios desplegado con GitOps
 
 Este repositorio, mantiene varios ejemplos de GitOps que son referenciados desde
 el [flujo propuesto por Mikroways](https://github.com/Mikroways/argo-gitops-demo-example/).
