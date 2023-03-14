@@ -57,7 +57,7 @@ corremos el siguiente comando:
 #     cd <directorio-con-acceso-a-cluster-kind>
 AGE_PK=$(kubectl -n argocd get secrets -l component=helm-secrets-age \
   -o jsonpath='{.items[0].data.key\.txt}' | base64 -d \
-  | grep 'public' | cut -d: -f2 | sed 's/^ *//' )
+  | grep 'public' | cut -d: -f2 )
 
 # Una vez con la variable seteada, procedemos a retornar al directorio con el
 # repositorio clonado desde el template
