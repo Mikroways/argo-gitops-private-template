@@ -16,7 +16,8 @@ Debido a que el flujo presenta varios ejemplos, con este repositorio
 completaremos los ejemplos que requieren trabajar con:
 
 * [**Un repositorio de GitOps**](gitops-wordpress/): desplegará un wordpess
-* Un repositorio de GitOps con una registry privada
+* [**Un repositorio de GitOps con una registry privada**](gitops-custom-nginx/):
+  desplegará un nginx desde una imagen privada, usando un chart público.
 * Un repositorio de GitOps utilizando un repositorio de chart privado.
 
 ## Uso del repositorio
@@ -27,6 +28,11 @@ nuevo repositorio **personal y privado** desde el botón [template](https://gith
 Una vez creado el repositorio privado seguir la documentación de cada
 directorio y del flujo para así completar la experiencia.
 
+> Es recomendable probar crearlo en github y en gitlab para verificar las
+> experiencias con diferentes plataformas. Este repositorio incluye pipelines
+> para generar imágenes de contenedores en ambas plataformas al pushear a la
+> rama principal: **main**.
+
 ## Requerimientos
 
 Para el uso de GitOps, manejaremos claves Age que nos permitirá cifrar los datos
@@ -35,9 +41,9 @@ usando sops. Las instrucciones para instalar las herramientas se mencionan en el
 Para este repositorio, no necesitamos todas las herramientas allí mencionadas,
 solo necesitamos de:
 
-* age
-* sops
-* direnv
+* [age](https://age-encryption.org/)
+* [sops](https://github.com/mozilla/sops)
+* [direnv](https://direnv.net/)
 
 ### Configuramos entonces direnv
 
@@ -57,7 +63,7 @@ corremos el siguiente comando:
 #     cd <directorio-con-acceso-a-cluster-kind>
 AGE_PK=$(kubectl -n argocd get secrets -l component=helm-secrets-age \
   -o jsonpath='{.items[0].data.key\.txt}' | base64 -d \
-  | grep 'public' | cut -d: -f2 )
+  | grep 'public' | cut -d: -f2 | sed 's/^ //')
 
 # Una vez con la variable seteada, procedemos a retornar al directorio con el
 # repositorio clonado desde el template
