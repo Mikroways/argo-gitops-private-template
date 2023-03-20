@@ -18,7 +18,12 @@ completaremos los ejemplos que requieren trabajar con:
 * [**Un repositorio de GitOps**](gitops-wordpress/): desplegará un wordpess
 * [**Un repositorio de GitOps con una registry privada**](gitops-custom-nginx/):
   desplegará un nginx desde una imagen privada, usando un chart público.
-* Un repositorio de GitOps utilizando un repositorio de chart privado.
+* **Un repositorio de GitOps utilizando un repositorio de chart privado:**
+  dividimos este ejemplo en dos escenarios. Ambos harán exactamente el mismo
+  despliegue, pero uno usará un repositorio de charts privado estándar mientras
+  que el otro usará una registry OCI como repositorio privado de helm charts:
+  * [**Ejemplo con un chart en un repositorio de charts privado**](./gitops-private-chart)
+  * [**Ejemplo con un chart en una registry OCI privada**](./gitops-private-chart-oci)
 
 ## Uso del repositorio
 
