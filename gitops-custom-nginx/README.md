@@ -51,7 +51,7 @@ El repositorio actual, ignora:
   chart del que depende nuestro chart saca un nuevo **patch number**. Esto es
   posible porque el `Chart.yaml` define como dependencia un **asterisco** en la
   versión del **patch number**. Si se versionara el `Chart.lock` esto no sería
-  posible, porque Argo CD respetaría lo que el **indique el lock*.
+  posible, porque Argo CD respetaría lo que le **indique el lock*.
 * El directorio `charts/` que contiene las dependencias si corremos `helm
   dependency update`
 

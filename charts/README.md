@@ -101,7 +101,7 @@ Obteniendo una salida como la siguiente:
 
 ```
 NAME                                 CHART VERSION   APP VERSION   DESCRIPTION
-my-private-repo/mikroways-websitei   0.1.0           1.16.0        A Helm chart for Kubernetes
+my-private-repo/mikroways-website    0.1.0           1.16.0        A Helm chart for Kubernetes
 ```
 
 ## helm registries
